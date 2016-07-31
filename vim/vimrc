@@ -59,7 +59,18 @@ let g:ctrlp_use_caching = 0
 let &colorcolumn=join(range(81,999),",")
 
 " Numbers
-set number
+set relativenumber
+
+function! NumberToggle()
+  if(&relativenumber == 1)
+    set number
+  else
+    set relativenumber
+  endif
+endfunc
+
+nnoremap <C-n> :call NumberToggle()<cr>
+
 
 " Softtabs, 2 spaces
 set tabstop=2
