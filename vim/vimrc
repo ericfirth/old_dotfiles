@@ -18,6 +18,7 @@ call vundle#begin()
 
 Plugin 'VundleVim/Vundle.vim'
 
+
 Plugin 'altercation/vim-colors-solarized'
 Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'rking/ag.vim'
@@ -25,11 +26,22 @@ Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
 Plugin 'christoomey/vim-sort-motion'
 Plugin 'tpope/vim-surround'
+Plugin 'tpope/vim-unimpaired'
 Plugin 'tpope/vim-repeat'
 Plugin 'tpope/vim-fugitive'
 Plugin 'tpope/vim-sensible'
-Plugin 'tpope/vim-rails'
 Plugin 'tpope/vim-commentary'
+Plugin 'scrooloose/syntastic'
+Plugin 'ap/vim-css-color'
+Plugin 'MarcWeber/vim-addon-mw-utils'
+Plugin 'tomtom/tlib_vim'
+Plugin 'garbas/vim-snipmate'
+
+" language based
+Plugin 'tpope/vim-rails'
+Plugin 'pangloss/vim-javascript'
+Plugin 'briancollins/vim-jst'
+Plugin 'mxw/vim-jsx'
 
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -84,17 +96,10 @@ set splitbelow
 set splitright
 
 filetype indent on
-au BufRead,BufNewFile *.ejs setfiletype html
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                          Mappings                                            "
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-" Get off my lawn
-nnoremap <Left> :echoe "Use h"<CR>
-nnoremap <Right> :echoe "Use l"<CR>
-nnoremap <Up> :echoe "Use k"<CR>
-nnoremap <Down> :echoe "Use j"<CR>
 
 " Quicker window movement
 nnoremap <C-j> <C-w>j
@@ -107,20 +112,21 @@ map <leader>i mmgg=G`m
 map <leader>p :set paste<CR><esc>"*]p:set nopaste<cr>
 nmap <leader>vr :tabedit $MYVIMRC<cr>
 nmap <leader>so :source $MYVIMRC<cr>
-nmap <leader>t :tabnew<cr><C-p>
 nmap <leader>gs :Gstatus<cr>
-inoremap jk <esc> 
-inoremap kj <esc> 
-imap <C-s> <esc>:w<cr>
+nmap <leader>sy :SyntasticCheck<cr>
 nmap 0 ^
+nmap <cr> o<esc>k
+nmap <leader>ca gg"*yG
 
-" Note that remapping C-s requires flow control to be disabled
-" (e.g. in .bashrc or .zshrc)
-map <C-s> <esc>:w<CR>
+nmap <C-s> <esc>:w<CR>
+nmap <C-w> <esc>:w<CR>:Gwrite<CR>
 imap <C-s> <esc>:w<CR>
 map <C-t> <esc>:tabnew<CR>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                    Plugin Settings!!!                                        "
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
+let g:syntastic_scss_checkers = ['scss_lint']
+let g:syntastic_html_checkers = ['']
+let g:syntastic_ruby_checkers = ['rubocop']
+let g:syntastic_javascript_checkers = ['eslint']
