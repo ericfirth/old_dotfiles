@@ -25,22 +25,23 @@ Plugin 'rking/ag.vim'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
 Plugin 'christoomey/vim-sort-motion'
+Plugin 'christoomey/vim-tmux-navigator'
 Plugin 'tpope/vim-surround'
+Plugin 'tpope/vim-dispatch'
 Plugin 'tpope/vim-unimpaired'
 Plugin 'tpope/vim-repeat'
 Plugin 'tpope/vim-fugitive'
 Plugin 'tpope/vim-sensible'
 Plugin 'tpope/vim-commentary'
-Plugin 'scrooloose/syntastic'
+" Plugin 'scrooloose/syntastic'
+Plugin 'w0rp/ale'
 Plugin 'ap/vim-css-color'
-Plugin 'MarcWeber/vim-addon-mw-utils'
-Plugin 'tomtom/tlib_vim'
-Plugin 'garbas/vim-snipmate'
+Plugin 'SirVer/ultisnips'
+Plugin 'vim-scripts/LustyExplorer'
 
 " language based
 Plugin 'tpope/vim-rails'
 Plugin 'pangloss/vim-javascript'
-Plugin 'briancollins/vim-jst'
 Plugin 'mxw/vim-jsx'
 
 call vundle#end()            " required
@@ -56,6 +57,7 @@ let g:solarized_termcolors=256
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 set nocompatible
+" set hidden
 
 " Switch syntax highlighting on, when the terminal has colors
 " Also switch on highlighting the last used search pattern.
@@ -72,17 +74,22 @@ let g:ctrlp_use_caching = 0
 let &colorcolumn=join(range(81,999),",")
 
 " Numbers
-set relativenumber
+set number
 
-function! NumberToggle()
-  if(&relativenumber == 1)
-    set number
-  else
-    set relativenumber
-  endif
-endfunc
+" command to create directories on write
+function! s:MkNonExDir(file, buf)
+    if empty(getbufvar(a:buf, '&buftype')) && a:file!~#'\v^\w+\:\/'
+        let dir=fnamemodify(a:file, ':h')
+        if !isdirectory(dir)
+            call mkdir(dir, 'p')
+        endif
+    endif
+endfunction
 
-nnoremap <C-n> :call NumberToggle()<cr>
+augroup BWCCreateDir
+    autocmd!
+    autocmd BufWritePre * :call s:MkNonExDir(expand('<afile>'), +expand('<abuf>'))
+augroup END
 
 
 " Softtabs, 2 spaces
@@ -98,7 +105,7 @@ set splitright
 filetype indent on
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"                          Mappings                                            "
+"                          mappings                                            "
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " Quicker window movement
@@ -106,17 +113,21 @@ nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-h> <C-w>h
 nnoremap <C-l> <C-w>l
-
+nnoremap <F1> :Dispatch rails test %<CR>
+nnoremap <F2> :Dispatch mocha --compilers js:babel-core/register test/frontend/setup.js %<CR>
 
 map <leader>i mmgg=G`m
 map <leader>p :set paste<CR><esc>"*]p:set nopaste<cr>
 nmap <leader>vr :tabedit $MYVIMRC<cr>
+nmap <leader>tm :tabedit ~/.tmux.conf<cr>
 nmap <leader>so :source $MYVIMRC<cr>
 nmap <leader>gs :Gstatus<cr>
 nmap <leader>sy :SyntasticCheck<cr>
+nmap <leader>jt :! 
 nmap 0 ^
 nmap <cr> o<esc>k
-nmap <leader>ca gg"*yG
+nmap j gj
+nmap k gk
 
 nmap <C-s> <esc>:w<CR>
 nmap <C-w> <esc>:w<CR>:Gwrite<CR>
@@ -130,3 +141,22 @@ let g:syntastic_scss_checkers = ['scss_lint']
 let g:syntastic_html_checkers = ['']
 let g:syntastic_ruby_checkers = ['rubocop']
 let g:syntastic_javascript_checkers = ['eslint']
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_loc_list_height = 5
+let g:syntastic_auto_loc_list = 0
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 1
+
+let g:UltiSnipsSnippetsDir='~/.vim/snippets'
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<tab>"
+let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+let g:UltiSnipsEditSplit="vertical"
+
+
+let g:airline#extensions#tabline#enabled = 1
+let g:airline_powerline_fonts = 1
