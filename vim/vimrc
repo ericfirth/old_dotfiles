@@ -19,7 +19,10 @@ call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 
 
-Plugin 'altercation/vim-colors-solarized'
+"colors
+Plugin 'morhetz/gruvbox'
+Plugin 'rakr/vim-one'
+
 Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'rking/ag.vim'
 Plugin 'vim-airline/vim-airline'
@@ -33,7 +36,6 @@ Plugin 'tpope/vim-repeat'
 Plugin 'tpope/vim-fugitive'
 Plugin 'tpope/vim-sensible'
 Plugin 'tpope/vim-commentary'
-" Plugin 'scrooloose/syntastic'
 Plugin 'w0rp/ale'
 Plugin 'ap/vim-css-color'
 Plugin 'SirVer/ultisnips'
@@ -43,21 +45,27 @@ Plugin 'vim-scripts/LustyExplorer'
 Plugin 'tpope/vim-rails'
 Plugin 'pangloss/vim-javascript'
 Plugin 'mxw/vim-jsx'
+Plugin 'samuelsimoes/vim-jsx-utils'
 
 call vundle#end()            " required
 filetype plugin indent on    " required
 
 
-set background=light
-colorscheme solarized
-let g:solarized_termcolors=256
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"                          Settings                                            "
+"                          settings                                            "
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-set nocompatible
-" set hidden
+" use 256 colors in terminal
+if !has("gui_running")
+  set t_Co=256
+  set term=screen-256color
+endif
+
+set background=dark
+colorscheme gruvbox
+set hidden
+
 
 " Switch syntax highlighting on, when the terminal has colors
 " Also switch on highlighting the last used search pattern.
@@ -71,26 +79,28 @@ set grepprg=ag
 let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
 let g:ctrlp_use_caching = 0
 
-let &colorcolumn=join(range(81,999),",")
+highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+match OverLength /\%81v.\+/
 
 " Numbers
 set number
 
 " command to create directories on write
 function! s:MkNonExDir(file, buf)
-    if empty(getbufvar(a:buf, '&buftype')) && a:file!~#'\v^\w+\:\/'
-        let dir=fnamemodify(a:file, ':h')
-        if !isdirectory(dir)
-            call mkdir(dir, 'p')
-        endif
+  if empty(getbufvar(a:buf, '&buftype')) && a:file!~#'\v^\w+\:\/'
+    let dir=fnamemodify(a:file, ':h')
+    if !isdirectory(dir)
+      call mkdir(dir, 'p')
     endif
+  endif
 endfunction
 
 augroup BWCCreateDir
-    autocmd!
-    autocmd BufWritePre * :call s:MkNonExDir(expand('<afile>'), +expand('<abuf>'))
+  autocmd!
+  autocmd BufWritePre * :call s:MkNonExDir(expand('<afile>'), +expand('<abuf>'))
 augroup END
 
+set mouse=a
 
 " Softtabs, 2 spaces
 set tabstop=2
@@ -122,35 +132,22 @@ nmap <leader>vr :tabedit $MYVIMRC<cr>
 nmap <leader>tm :tabedit ~/.tmux.conf<cr>
 nmap <leader>so :source $MYVIMRC<cr>
 nmap <leader>gs :Gstatus<cr>
-nmap <leader>sy :SyntasticCheck<cr>
-nmap <leader>jt :! 
+nmap <leader>s :w<cr>
+nmap <leader>q :q<cr>
+nmap <leader>ss :w<cr>:Gwrite<cr>
+noremap <leader>ja :call JSXEncloseReturn()<CR>
+nnoremap <leader>ji :call JSXEachAttributeInLine()<CR>
+nnoremap <leader>je :call JSXExtractPartialPrompt()<CR>
+nnoremap <leader>jc :call JSXChangeTagPrompt()<CR>
+nnoremap vat :call JSXSelectTag()<CR>
 nmap 0 ^
 nmap <cr> o<esc>k
 nmap j gj
 nmap k gk
 
-nmap <C-s> <esc>:w<CR>
-nmap <C-w> <esc>:w<CR>:Gwrite<CR>
-imap <C-s> <esc>:w<CR>
-map <C-t> <esc>:tabnew<CR>
-
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                    Plugin Settings!!!                                        "
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:syntastic_scss_checkers = ['scss_lint']
-let g:syntastic_html_checkers = ['']
-let g:syntastic_ruby_checkers = ['rubocop']
-let g:syntastic_javascript_checkers = ['eslint']
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
-
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_loc_list_height = 5
-let g:syntastic_auto_loc_list = 0
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 1
-
 let g:UltiSnipsSnippetsDir='~/.vim/snippets'
 let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<tab>"
@@ -159,4 +156,4 @@ let g:UltiSnipsEditSplit="vertical"
 
 
 let g:airline#extensions#tabline#enabled = 1
-let g:airline_powerline_fonts = 1
+let g:airline_powerline_fonts = 0
