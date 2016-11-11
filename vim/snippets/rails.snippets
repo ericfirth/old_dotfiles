@@ -1,0 +1,4 @@
+snippet pp "permitted_params"
+	def $1_params
+		params.require(:$1).permit($0)
+	end

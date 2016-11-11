@@ -1,0 +1,167 @@
+snippet i_
+	import { $1 } from 'lodash';
+snippet testcomponent
+	import { shallow, mount } from 'enzyme';
+	import expect from 'expect';
+	import React from 'react';
+	import $1 from '../../../../frontend/javascript/components/$2/$1';
+
+	describe('<$1 />', () => {
+		it('$3', () => {
+			$0
+		});
+	});
+
+snippet ptaopto
+	PropTypes.arrayOf(PropTypes.object),
+snippet ptaoptor
+	PropTypes.arrayOf(PropTypes.object).isRequired,
+snippet ptor
+	PropTypes.object.isRequired,$0
+snippet pto
+	PropTypes.object,$0
+snippet ptar
+	PropTypes.array.isRequired,$0
+snippet pta
+	PropTypes.array,$0
+snippet ptfr
+	PropTypes.func.isRequired,$0
+snippet ptf
+	PropTypes.func,$0
+snippet ptbr
+	PropTypes.bool.isRequired,$0
+snippet ptb
+	PropTypes.bool,$0
+snippet ptnr
+	PropTypes.number.isRequired,$0
+snippet ptn
+	PropTypes.number,$0
+snippet ptsr
+	PropTypes.string.isRequired,$0
+snippet pts
+	PropTypes.string,$0
+snippet ptoot
+	PropTypes.oneOfType([
+		$1,
+		$2,
+	])
+snippet ptsh
+	PropTypes.shape({
+		$1
+	}),
+snippet ptshr
+	PropTypes.shape({
+		$1
+	}).isRequired,
+snippet div
+	<div className="$1">$2</div>
+snippet ir
+	import React from 'react';
+
+snippet irpt
+	import React, { PropTypes } from 'react';
+
+snippet cdm
+	componentDidMount() {
+		$1
+	}
+
+snippet ilink
+	import { Link } from 'react-router';
+
+snippet reducer
+	const initialState = $1;
+	import {} from '../constants';
+
+	export default function $2(state = initialState, action) {
+		const { type } = action;
+
+		switch (type) {
+			case $3:
+				return $0
+			default:
+				return state;
+		}
+	}
+
+snippet dcomp
+	import React, { PropTypes } from 'react';
+
+	export default function $1({ $2 }) {
+		return (
+			$3
+		);
+	}
+
+	$1.propTypes = {
+	};
+
+snippet scomp
+	import React, { PropTypes, Component } from 'react';
+
+	export default class $1 extends Component {
+		constructor(props) {
+			super();
+		}
+		render() {
+			return (
+				$2
+			);
+		}
+	}
+
+	$1.propTypes = {
+	};
+
+snippet thunk
+	import { $4 } from '../../helpers/ajax';
+	${9:import { byId } from '../../helpers';}
+
+	function request$2($6) {
+		return {
+			type: 'REQUEST_$3',
+			payload: $6,
+		};
+	}
+	function receive$2($7) {
+		return {
+			type: 'RECEIVE_$3',
+			payload: $7,
+		};
+	}
+	export default function $1($6) {
+		return function $1Thunk(dispatch) {
+			dispatch(request$2($6));
+			return $4('$5', {
+				body: {},
+				success: json => dispatch(receive$2(json)),
+				${8:error: ({ error }) => dispatch(errorNotification(error)),}
+			});
+		};
+	}
+
+snippet bthis
+	this.$1 = this.$1.bind(this);
+snippet desc
+	describe('$1', () => {
+		$2
+	});
+
+snippet it
+	it('$1', () => {
+		$2
+	});
+
+snippet container
+	import { connect } from 'react-redux';
+	import $1 from './$1';
+
+	const mapStateToProps = state => ({
+		$2
+	});
+
+	const mapDispatchToProps = dispatch => ({
+		$3
+	});
+
+	export default connect(mapStateToProps, mapDispatchToProps)($1);
