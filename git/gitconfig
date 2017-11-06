@@ -1,0 +1,22 @@
+
+[core]
+	excludesfile = /Users/eric.firth/.gitignore_global
+	editor = vim -v
+[user]
+	name = Eric Firth
+	email = eric.firth@persado.com
+[init]
+	templatedir = ~/.git_template
+[color]
+	ui = true
+[push]
+	default = current
+[alias]
+	sla = log --oneline --decorate --graph --all
+	glog = log -E -i --grep
+	unstage = reset
+	uncommit = reset --soft HEAD^
+	b = branch
+	co = checkout
+[fetch]
+	prune = true
