@@ -7,17 +7,14 @@
 let mapleader = "\<Space>"
 
 set nocompatible              " be iMproved, required
-filetype off                  " required
 
 packadd minpac
 call minpac#init()
 
 "colors
+call minpac#add('kien/ctrlp.vim')
 call minpac#add('morhetz/gruvbox')
-
-call minpac#add('junegunn/fzf.vim')
 call minpac#add('junegunn/goyo.vim')
-call minpac#add('mileszs/ack.vim')
 call minpac#add('itchyny/lightline.vim')
 call minpac#add('ervandew/supertab')
 call minpac#add('airblade/vim-gitgutter')
@@ -33,12 +30,11 @@ call minpac#add('tpope/vim-commentary')
 call minpac#add('tpope/vim-abolish')
 call minpac#add('tpope/vim-endwise')
 call minpac#add('tpope/vim-speeddating')
-call minpac#add('ap/vim-css-color')
+call minpac#add('gko/vim-coloresque')
 call minpac#add('SirVer/ultisnips')
 call minpac#add('skalnik/vim-vroom')
 call minpac#add('w0rp/ale')
 call minpac#add('scrooloose/nerdtree')
-call minpac#add('ludovicchabant/vim-gutentags')
 
 call minpac#add('junegunn/vim-easy-align')
 call minpac#add('ryanoasis/vim-devicons')
@@ -48,10 +44,9 @@ call minpac#add('sheerun/vim-polyglot')
 call minpac#add('tpope/vim-rails')
 call minpac#add('pangloss/vim-javascript')
 call minpac#add('mxw/vim-jsx')
-call minpac#add('chemzqm/vim-jsx-improve')
+call minpac#add('MaxMEllon/vim-jsx-pretty')
 call minpac#add('samuelsimoes/vim-jsx-utils')
 call minpac#add('Galooshi/vim-import-js')
-" call minpac#add('leshill/vim-json')
 call minpac#add('flowtype/vim-flow')
 call minpac#add('aliou/sql-heredoc.vim')
 " call minpac#add('ElmCast/elm-vim')
@@ -66,7 +61,6 @@ command! PackClean call minpac#clean()
 "                          settings                                            "
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-" colorscheme solarized8_light
 colorscheme gruvbox
 set background=dark
 set hidden
@@ -120,6 +114,10 @@ set softtabstop=2
 set shiftround
 set expandtab
 
+augroup filetypedetect
+  au BufRead,BufNewFile *.jsx setfiletype javascript
+augroup END
+
 " Open new split panes to right and bottom, which feels more natural
 set splitbelow
 set splitright
@@ -152,10 +150,12 @@ nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-h> <C-w>h
 nnoremap <C-l> <C-w>l
-nnoremap <leader>tt :call vroom#RunTestFile({'runner':'rspec'})<CR>
+nnoremap <leader>tt :! rspec %<cr>
 nnoremap <leader>TT :call vroom#RunNearestTest({'runner':'rspec'})<CR>
 nnoremap <leader>t :call vroom#RunTestFile({'runner':'rails test'})<CR>
 nnoremap <leader>T :call vroom#RunNearestTest({'runner':'rails test'})<CR>
+nnoremap <leader>jt1 :! yarn test1 %<cr>
+
 
 " Start interactive EasyAlign in visual mode (e.g. vipga)
 xmap ga <Plug>(EasyAlign)
@@ -165,7 +165,6 @@ nmap ga <Plug>(EasyAlign)
 
 nmap <leader>R :Dispatch chrome-cli reload<cr>
 map <leader>i mmgg=G`m
-map <leader>p :set paste<CR><esc>"*]p:set nopaste<cr>
 nmap <leader>vr :tabedit ~/.vimrc<cr>
 nmap <leader>tm :tabedit ~/.tmux.conf<cr>
 nmap <leader>so :source $MYVIMRC<cr>
@@ -184,6 +183,7 @@ nmap <cr> o<esc>k
 nmap j gj
 nmap k gk
 map <C-n> :NERDTreeToggle<cr>
+map <C-b> :CtrlPBuffer<cr>
 
 nnoremap <F1> :set hlsearch<cr>
 nnoremap <F2> :set nohlsearch<cr>
@@ -191,6 +191,8 @@ nnoremap <F3> :set paste<cr>
 nnoremap <F4> :set nopaste<cr>
 nnoremap <f5> :let g:ale_fix_on_save = 0<cr>
 nnoremap <f6> :let g:ale_fix_on_save = 1<cr>
+nnoremap <leader>fd :FlowJumpToDef<cr>
+nnoremap <leader>fw :FlowType<cr>
 
 nnoremap <leader>mc :Dispatch rails g migration 
 nnoremap <leader>mm :Dispatch rails db:migrate<cr>
@@ -204,6 +206,7 @@ nnoremap <leader>1b :! jscodeshift -t ~/code/react-codemod/transforms/manual-bin
 nnoremap <leader>1p :! jscodeshift -t ~/code/react-codemod/transforms/pure-component.js % --useArrows=true --destructuring=true<cr>
 
 nnoremap <leader>jt :! jsctags -o frontend<cr>
+nnoremap <leader>pw :! prettier --write --config ./.prettierrc.json %<cr>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                    commands!!!                                               "
@@ -223,21 +226,14 @@ let g:UltiSnipsEditSplit="vertical"
 set rtp+=/usr/local/opt/fzf
 set rtp+=~/.fzf
 
-
-nmap <Leader>b :Buffers<CR>
-nmap <Leader>r :Tags<CR>
-nmap <Leader>f :Files<CR>
-nmap <Leader>a :Ag
-
-let g:airline#extensions#tabline#enabled = 1
-let g:airline_powerline_fonts = 1
-
 let g:ale_linters = { 'javascript': ['eslint', 'flow'], 'ruby': ['rubocop'] }
 let g:ale_fixers = {}
 let g:ale_fixers['javascript'] = ['prettier']
+let g:ale_javascript_prettier_options = '--config ./.prettierrc.json'
 let g:ale_fixers['ruby'] = ['rubocop']
-let g:ale_javascript_prettier_options = '--single-quote --trailing-comma es5'
 let g:ale_fix_on_save = 1
+let g:ale_history_log_output = 1
+
 
 let g:ale_sign_warning = '▲'
 let g:ale_sign_error = '✗'
@@ -258,7 +254,7 @@ let g:lightline = {
       \ 'colorscheme': 'gruvbox',
       \ 'active': {
       \   'left': [['mode', 'paste'], ['filename', 'modified']],
-      \   'right': [['lineinfo'], ['percent'], ['readonly', 'linter_warnings', 'linter_errors', 'linter_ok']]
+      \   'right': [['filetype'], ['lineinfo'], ['percent'], ['readonly', 'linter_warnings', 'linter_errors', 'linter_ok']]
       \ },
       \ 'component_expand': {
       \   'linter_warnings': 'LightlineLinterWarnings',
