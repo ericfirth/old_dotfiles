@@ -12,9 +12,10 @@ packadd minpac
 call minpac#init()
 
 "colors
-call minpac#add('kien/ctrlp.vim')
+" call minpac#add('kien/ctrlp.vim')
 call minpac#add('morhetz/gruvbox')
 call minpac#add('junegunn/goyo.vim')
+call minpac#add('junegunn/fzf.vim')
 call minpac#add('itchyny/lightline.vim')
 call minpac#add('ervandew/supertab')
 call minpac#add('airblade/vim-gitgutter')
@@ -35,6 +36,10 @@ call minpac#add('SirVer/ultisnips')
 call minpac#add('skalnik/vim-vroom')
 call minpac#add('w0rp/ale')
 call minpac#add('scrooloose/nerdtree')
+call minpac#add('roxma/nvim-yarp')
+call minpac#add('roxma/vim-hug-neovim-rpc')
+call minpac#add('Shougo/deoplete.nvim')
+call minpac#add('AndrewRadev/splitjoin.vim')
 
 call minpac#add('junegunn/vim-easy-align')
 call minpac#add('ryanoasis/vim-devicons')
@@ -81,8 +86,8 @@ endif
 " Use Silver Searcher instead of grep
 set grepprg=ag
 " Make CtrlP use ag for listing the files. Way faster and no useless files.
-let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
-let g:ctrlp_use_caching = 0
+" let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+" let g:ctrlp_use_caching = 0
 
 " highlight OverLength ctermbg=red ctermfg=white guibg=#592929
 " match OverLength /\%81v.\+/
@@ -129,6 +134,8 @@ autocmd BufRead,BufNewFile *.json.jb set filetype=ruby
 let g:rubycomplexity_enable_at_startup = 0
 
 set noswapfile
+set undofile                        " Record undo history after leaving buffer
+set undodir=$HOME/.vim/undodir      " Store undofiles in $HOME/.vim/undodir
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                          mappings                                            "
@@ -170,20 +177,14 @@ nmap <leader>tm :tabedit ~/.tmux.conf<cr>
 nmap <leader>so :source $MYVIMRC<cr>
 nmap <leader>gs :Gstatus<cr>
 nmap <leader>s :w<cr>
-nmap <leader>q :q<cr>
 nmap <leader>S :w<cr>:Gwrite<cr>
 nmap <leader>gp ci(props<esc>oconst <esc>pA = props;<esc>
-noremap <leader>ja :call JSXEncloseReturn()<CR>
-nnoremap <leader>ji :call JSXEachAttributeInLine()<CR>
-nnoremap <leader>je :call JSXExtractPartialPrompt()<CR>
-nnoremap <leader>jc :call JSXChangeTagPrompt()<CR>
-nnoremap vat :call JSXSelectTag()<CR>
 nmap 0 ^
 nmap <cr> o<esc>k
 nmap j gj
 nmap k gk
 map <C-n> :NERDTreeToggle<cr>
-map <C-b> :CtrlPBuffer<cr>
+" map <C-b> :CtrlPBuffer<cr>
 
 nnoremap <F1> :set hlsearch<cr>
 nnoremap <F2> :set nohlsearch<cr>
@@ -194,9 +195,10 @@ nnoremap <f6> :let g:ale_fix_on_save = 1<cr>
 nnoremap <leader>fd :FlowJumpToDef<cr>
 nnoremap <leader>fw :FlowType<cr>
 
-nnoremap <leader>mc :Dispatch rails g migration 
-nnoremap <leader>mm :Dispatch rails db:migrate<cr>
-nnoremap <leader>mr :Dispatch rails db:rollback<cr>
+
+nnoremap <leader>z zfip
+nnoremap <leader>Z zo
+
 nnoremap <leader>cc :set clipboard=unnamed<cr>
 nnoremap <leader>rx :call ShowComplexity()<cr>
 nnoremap <leader>rc :Dispatch rails console<cr>
@@ -206,7 +208,19 @@ nnoremap <leader>1b :! jscodeshift -t ~/code/react-codemod/transforms/manual-bin
 nnoremap <leader>1p :! jscodeshift -t ~/code/react-codemod/transforms/pure-component.js % --useArrows=true --destructuring=true<cr>
 
 nnoremap <leader>jt :! jsctags -o frontend<cr>
-nnoremap <leader>pw :! prettier --write --config ./.prettierrc.json %<cr>
+
+nnoremap Q @@
+
+nmap <Leader>b :Buffers<CR>
+nmap <Leader>r :Tags<CR>
+nmap <Leader>f :Files<CR>
+nmap <Leader>a :Ag
+
+nmap <Leader>ak <Plug>(ale_previous_wrap)
+nmap <Leader>aj <Plug>(ale_next_wrap)
+
+" bind K to grep word under cursor
+nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                    commands!!!                                               "
@@ -229,7 +243,7 @@ set rtp+=~/.fzf
 let g:ale_linters = { 'javascript': ['eslint', 'flow'], 'ruby': ['rubocop'] }
 let g:ale_fixers = {}
 let g:ale_fixers['javascript'] = ['prettier']
-let g:ale_javascript_prettier_options = '--config ./.prettierrc.json'
+let g:ale_javascript_prettier_options = '--config ~/code/sensei/.prettierrc.json'
 let g:ale_fixers['ruby'] = ['rubocop']
 let g:ale_fix_on_save = 1
 let g:ale_history_log_output = 1

@@ -19,7 +19,10 @@
 	b = branch
 	co = checkout
   favlog = "!git --no-pager log --pretty=format:'%C(blue)%h%C(reset) - %s [%C(green)%ar%C(reset)] %an'"
+  last25 = "!git --no-pager log --pretty=format:'%C(blue)%h%C(reset) - %s [%C(green)%ar%C(reset)] %an' -25"
   omrebase = "!git fetch --all && git rebase origin/master"
   delbranch = "branch -D"
+	lc = show HEAD^..HEAD
+	staged = diff --cached
 [fetch]
 	prune = true
