@@ -1,0 +1,163 @@
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                                                              "
+"                    Eric Firth's VimRC                                        "
+"                                                                              "
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+let mapleader = "\<Space>"
+
+set nocompatible              " be iMproved, required
+
+packadd minpac
+call minpac#init()
+
+"colors
+call minpac#add('kien/ctrlp.vim')
+call minpac#add('morhetz/gruvbox')
+call minpac#add('itchyny/lightline.vim')
+call minpac#add('ervandew/supertab')
+call minpac#add('airblade/vim-gitgutter')
+call minpac#add('tpope/vim-surround')
+call minpac#add('tpope/vim-unimpaired')
+call minpac#add('tpope/vim-repeat')
+call minpac#add('tpope/vim-fugitive')
+call minpac#add('tpope/vim-sensible')
+call minpac#add('tpope/vim-commentary')
+call minpac#add('tpope/vim-abolish')
+call minpac#add('tpope/vim-endwise')
+
+" " language based
+call minpac#add('sheerun/vim-polyglot')
+call minpac#add('tpope/vim-rails')
+call minpac#add('k-takata/minpac', {'type':'opt'})
+
+" minpac commands:
+command! PackUpdate call minpac#update()
+command! PackClean call minpac#clean()
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                          settings                                            "
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" colorscheme solarized8_light
+colorscheme gruvbox
+set background=dark
+set hidden
+set cursorline
+set path+=**
+set wildmenu
+set backupdir=~/.vim/backup//
+set directory=~/.vim/swap//
+set undodir=~/.vim/undo//
+
+  syntax on
+
+" Use Silver Searcher instead of grep
+set grepprg=ag
+" Make CtrlP use ag for listing the files. Way faster and no useless files.
+let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+let g:ctrlp_use_caching = 0
+
+" highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+" match OverLength /\%81v.\+/
+
+" Numbers
+set number
+
+" command to create directories on write
+function! s:MkNonExDir(file, buf)
+  if empty(getbufvar(a:buf, '&buftype')) && a:file!~#'\v^\w+\:\/'
+    let dir=fnamemodify(a:file, ':h')
+    if !isdirectory(dir)
+      call mkdir(dir, 'p')
+    endif
+  endif
+endfunction
+
+augroup BWCCreateDir
+  autocmd!
+  autocmd BufWritePre * :call s:MkNonExDir(expand('<afile>'), +expand('<abuf>'))
+augroup END
+
+set mouse=a
+
+" Softtabs, 2 spaces
+set tabstop=2
+set shiftwidth=2
+set softtabstop=2
+set shiftround
+set expandtab
+
+augroup filetypedetect
+  au BufRead,BufNewFile *.jsx setfiletype javascript
+  autocmd BufRead,BufNewFile *.json.jb set filetype=ruby
+augroup END
+
+" Open new split panes to right and bottom, which feels more natural
+set splitbelow
+set splitright
+
+filetype indent on
+filetype on
+
+set noswapfile
+
+" Quicker window movement
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-h> <C-w>h
+nnoremap <C-l> <C-w>l
+
+
+map <leader>i mmgg=G`m
+map <leader>p :set paste<CR><esc>"*]p:set nopaste<cr>
+nmap <leader>vr :tabedit ~/.vimrc<cr>
+nmap <leader>tm :tabedit ~/.tmux.conf<cr>
+nmap <leader>so :source $MYVIMRC<cr>
+nmap <leader>gs :Gstatus<cr>
+nmap <leader>s :w<cr>
+nmap <leader>q :q<cr>
+nmap <leader>S :w<cr>:Gwrite<cr>
+nmap <leader>gp ci(props<esc>oconst <esc>pA = props;<esc>
+noremap <leader>ja :call JSXEncloseReturn()<CR>
+nnoremap <leader>ji :call JSXEachAttributeInLine()<CR>
+nnoremap <leader>je :call JSXExtractPartialPrompt()<CR>
+nnoremap <leader>jc :call JSXChangeTagPrompt()<CR>
+nnoremap vat :call JSXSelectTag()<CR>
+nmap 0 ^
+nmap <cr> o<esc>k
+nmap j gj
+nmap k gk
+map <C-n> :NERDTreeToggle<cr>
+map <C-b> :CtrlPBuffer<cr>
+
+nnoremap <F1> :set hlsearch<cr>
+nnoremap <F2> :set nohlsearch<cr>
+nnoremap <F3> :set paste<cr>
+nnoremap <F4> :set nopaste<cr>
+nnoremap <f5> :let g:ale_fix_on_save = 0<cr>
+nnoremap <f6> :let g:ale_fix_on_save = 1<cr>
+nnoremap <leader>fd :FlowJumpToDef<cr>
+nnoremap <leader>fw :FlowType<cr>
+
+nnoremap <leader>mc :Dispatch rails g migration 
+nnoremap <leader>mm :Dispatch rails db:migrate<cr>
+nnoremap <leader>mr :Dispatch rails db:rollback<cr>
+nnoremap <leader>cc :set clipboard=unnamed<cr>
+nnoremap <leader>rx :call ShowComplexity()<cr>
+nnoremap <leader>rc :Dispatch rails console<cr>
+nnoremap <leader>fl :Dispatch npm run flow<cr>
+
+nnoremap <leader>1b :! jscodeshift -t ~/code/react-codemod/transforms/manual-bind-to-arrow.js %<cr>
+nnoremap <leader>1p :! jscodeshift -t ~/code/react-codemod/transforms/pure-component.js % --useArrows=true --destructuring=true<cr>
+
+nnoremap <leader>jt :! jsctags -o frontend<cr>
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                    commands!!!                                               "
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let @z='gg/PropTypea, Componentjj0/funciwclassf(di(oconst p = this.props;k-jf(c$ extends Component {orender() {/}n/Componentnf{%%kjj%o} i'
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                    Plugin Settings!!!                                        "
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""

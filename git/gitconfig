@@ -24,5 +24,6 @@
   delbranch = "branch -D"
 	lc = show HEAD^..HEAD
 	staged = diff --cached
+	cane = commit --amend --no-edit
 [fetch]
 	prune = true

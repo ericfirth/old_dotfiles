@@ -32,7 +32,7 @@ alias delbranch='git branch -D'
 alias vim="/Applications/MacVim.app/Contents/MacOS/Vim"
 alias svim="/Applications/MacVim.app/Contents/MacOS/Vim -u ~/.vimrc-simple"
 alias sensei="~/code/scripts/start-sensei"
-alias branches="git branch --sort=-committerdate"
+alias branches="git branch --sort=committerdate"
 alias compose="sudo docker-compose up -d"
 alias proddump="sh production-dump.sh"
 alias coverage='chrome-cli open "file://$(pwd)/coverage/index.html"'
@@ -58,5 +58,6 @@ g() {
   fi
 }
 
+export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
 # Complete g like git
 compdef g=git

@@ -31,6 +31,8 @@ call minpac#add('tpope/vim-commentary')
 call minpac#add('tpope/vim-abolish')
 call minpac#add('tpope/vim-endwise')
 call minpac#add('tpope/vim-speeddating')
+call minpac#add('tpope/vim-obsession')
+call minpac#add('dhruvasagar/vim-prosession')
 call minpac#add('gko/vim-coloresque')
 call minpac#add('SirVer/ultisnips')
 call minpac#add('skalnik/vim-vroom')
@@ -38,8 +40,8 @@ call minpac#add('w0rp/ale')
 call minpac#add('scrooloose/nerdtree')
 call minpac#add('roxma/nvim-yarp')
 call minpac#add('roxma/vim-hug-neovim-rpc')
-call minpac#add('Shougo/deoplete.nvim')
 call minpac#add('AndrewRadev/splitjoin.vim')
+call minpac#add('neoclide/coc.nvim')
 
 call minpac#add('junegunn/vim-easy-align')
 call minpac#add('ryanoasis/vim-devicons')
@@ -51,8 +53,8 @@ call minpac#add('pangloss/vim-javascript')
 call minpac#add('mxw/vim-jsx')
 call minpac#add('MaxMEllon/vim-jsx-pretty')
 call minpac#add('samuelsimoes/vim-jsx-utils')
-call minpac#add('Galooshi/vim-import-js')
-call minpac#add('flowtype/vim-flow')
+call minpac#add('leafgarland/typescript-vim')
+call minpac#add('peitalin/vim-jsx-typescript')
 call minpac#add('aliou/sql-heredoc.vim')
 " call minpac#add('ElmCast/elm-vim')
 call minpac#add('skammer/vim-ruby-complexity', {'type':'opt'})
@@ -202,7 +204,6 @@ nnoremap <leader>Z zo
 nnoremap <leader>cc :set clipboard=unnamed<cr>
 nnoremap <leader>rx :call ShowComplexity()<cr>
 nnoremap <leader>rc :Dispatch rails console<cr>
-nnoremap <leader>fl :Dispatch npm run flow<cr>
 
 nnoremap <leader>1b :! jscodeshift -t ~/code/react-codemod/transforms/manual-bind-to-arrow.js %<cr>
 nnoremap <leader>1p :! jscodeshift -t ~/code/react-codemod/transforms/pure-component.js % --useArrows=true --destructuring=true<cr>
@@ -240,7 +241,7 @@ let g:UltiSnipsEditSplit="vertical"
 set rtp+=/usr/local/opt/fzf
 set rtp+=~/.fzf
 
-let g:ale_linters = { 'javascript': ['eslint', 'flow'], 'ruby': ['rubocop'] }
+let g:ale_linters = { 'javascript': ['eslint'], 'ruby': ['rubocop'], 'typescript': ['eslint', 'tsserver'] }
 let g:ale_fixers = {}
 let g:ale_fixers['javascript'] = ['prettier']
 let g:ale_javascript_prettier_options = '--config ~/code/sensei/.prettierrc.json'
@@ -267,7 +268,7 @@ let g:ackprg = 'ag --vimgrep'
 let g:lightline = {
       \ 'colorscheme': 'gruvbox',
       \ 'active': {
-      \   'left': [['mode', 'paste'], ['filename', 'modified']],
+      \   'left': [['mode', 'paste'], ['cocstatus', 'readonly', 'filename', 'modified']],
       \   'right': [['filetype'], ['lineinfo'], ['percent'], ['readonly', 'linter_warnings', 'linter_errors', 'linter_ok']]
       \ },
       \ 'component_expand': {
@@ -276,7 +277,8 @@ let g:lightline = {
       \   'linter_ok': 'LightlineLinterOK'
       \ },
       \ 'component_function': {
-      \   'filename': 'LightlineFilename'
+      \   'filename': 'LightlineFilename',
+      \   'cocstatus': 'coc#status'
       \},
       \ 'component_type': {
       \   'readonly': 'error',
@@ -286,7 +288,7 @@ let g:lightline = {
       \ }
 
 function! LightlineFilename()
-  let filename = expand('%:t') !=# '' ? expand('%:t') : '[No Name]'
+  let filename = expand('%:t') !=# '' ? expand('%') : '[No Name]'
   let modified = &modified ? ' +' : ''
   return filename . modified
 endfunction
@@ -312,6 +314,7 @@ function! LightlineLinterOK() abort
   return l:counts.total == 0 ? '✓ ' : ''
 endfunction
 
+
 autocmd User ALELint call s:MaybeUpdateLightline()
 
 " Update and show lightline but only if it's visible
@@ -321,3 +324,72 @@ function! s:MaybeUpdateLightline()
     call lightline#update()
   end
 endfunction
+
+let g:ale_history_log_output = 1
+
+let g:prosession_per_branch = 1
+
+
+" Better display for messages
+set cmdheight=2
+
+" Smaller updatetime for CursorHold & CursorHoldI
+set updatetime=300
+
+" always show signcolumns
+set signcolumn=yes
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+" Use <c-space> for trigger completion.
+inoremap <silent><expr> <c-space> coc#refresh()
+
+" Use `[c` and `]c` for navigate diagnostics
+nmap <silent> [c <Plug>(coc-diagnostic-prev)
+nmap <silent> ]c <Plug>(coc-diagnostic-next)
+
+" Remap keys for gotos
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" Use K for show documentation in preview window
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if &filetype == 'vim'
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+
+" Highlight symbol under cursor on CursorHold
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+" Remap for rename current word
+nmap <leader>rn <Plug>(coc-rename)
+
+" Remap for format selected region
+vmap <leader>F  <Plug>(coc-format-selected)
+nmap <leader>F  <Plug>(coc-format-selected)
+
+" Or use formatexpr for range format
+set formatexpr=CocAction('formatSelected')
+
+" Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
+vmap <leader>a  <Plug>(coc-codeaction-selected)
+nmap <leader>a  <Plug>(coc-codeaction-selected)
+
+" Remap for do codeAction of current line
+nmap <leader>ac  <Plug>(coc-codeaction)
+
+" Use `:Format` for format current buffer
+command! -nargs=0 Format :call CocAction('format')
+
+" Use `:Fold` for fold current buffer
+command! -nargs=? Fold :call     CocAction('fold', <f-args>)
