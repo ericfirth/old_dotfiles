@@ -1,43 +1,28 @@
+source ~/.zplug/init.zsh
+
+zplug 'mafredri/zsh-async'
+zplug 'sindresorhus/pure'
+zplug 'zsh-users/zsh-syntax-highlighting'
+zplug 'zsh-users/zsh-completions'
+zplug load
+
+# autoload -U promptinit; promptinit
+# prompt pure
 export EDITOR='vim'
-export EDITOR=$VISUAL
-# Path to your oh-my-zsh configuration.
-export ZSH=$HOME/.oh-my-zsh
-
-# Path to your oh-my-zsh installation.
-
-# export DISABLE_AUTO_UPDATE="true" # Don't let oh-my-zsh auto update
-export ZSH_THEME="cjt" # Zsh theme, loaded from ~/.oh-my-zsh/themese. Set to 'random' for fun
-source $ZSH/oh-my-zsh.sh
-
-DISABLE_AUTO_UPDATE="true"
-
-ENABLE_CORRECTION="true"
 
 COMPLETION_WAITING_DOTS="true"
-
-plugins=(git bundler rvm zsh-syntax-highlighting)
 
 stty -ixon -ixoff 
 stty start undef stop undef
 
-unalias g
 alias ls='ls -FG'
 alias ez="vim  ~/.zshrc"
 alias sz="source  ~/.zshrc"
 alias et="vim ~/.tmux.conf"
 alias be="bundle exec"
-alias genodir="cd ~/code/genopedia"
-alias senseidir="cd ~/code/sensei"
 alias delbranch='git branch -D'
-alias vim="/Applications/MacVim.app/Contents/MacOS/Vim"
-alias svim="/Applications/MacVim.app/Contents/MacOS/Vim -u ~/.vimrc-simple"
-alias sensei="~/code/scripts/start-sensei"
 alias branches="git branch --sort=committerdate"
 alias compose="sudo docker-compose up -d"
-alias proddump="sh production-dump.sh"
-alias coverage='chrome-cli open "file://$(pwd)/coverage/index.html"'
-alias qadump='PGPASSWORD=reNH5vmzhw1PRbnsLq3gOi78 pg_dump --clean -h devdb2.ath.persado.com -U sensei sensei_qa > "../../db-dumps/$(date +"%Y-%m-%d_%H_%M_%S")-qa-dump.db"'
-alias genoqadump='PGPASSWORD=gwiOXSM5iq7eBFgG6AHKGDoq pg_dump --clean -h devdb2.ath.persado.com -U a_geno genopedia_qa3 > "../../db-dumps/$(date +"%Y-%m-%d_%H_%M_%S")-geno-qa-dump.db"'
 
 export NVM_DIR="/Users/eric.firth/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
