@@ -23,6 +23,7 @@
   last25 = "!git --no-pager log --pretty=format:'%C(blue)%h%C(reset) - %s [%C(green)%ar%C(reset)] %an' -25"
   omrebase = "!git fetch --all && git rebase origin/master"
   delbranch = "branch -D"
+  updatepush = "!git fetch --all && git rebase origin/master && git push -f --no-verify"
 	lc = show HEAD^..HEAD
 	staged = diff --cached
 	cane = commit --amend --no-edit
