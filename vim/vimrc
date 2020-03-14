@@ -240,6 +240,7 @@ let test#javascript#jest#executable = 'yarn test'
 
 " FZF (replaces Ctrl-P, FuzzyFinder and Command-T)
 set rtp+=/usr/local/opt/fzf
+set rtp+=/home/linuxbrew/.linuxbrew/bin/fzf
 set rtp+=~/.fzf
 let $FZF_DEFAULT_COMMAND = 'ag -g ""'
 
