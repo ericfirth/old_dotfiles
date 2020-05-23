@@ -20,6 +20,7 @@ call minpac#add('ervandew/supertab')
 call minpac#add('airblade/vim-gitgutter')
 call minpac#add('christoomey/vim-sort-motion')
 call minpac#add('christoomey/vim-tmux-navigator')
+call minpac#add('chrisbra/csv.vim')
 call minpac#add('tpope/vim-surround')
 call minpac#add('tpope/vim-dispatch')
 call minpac#add('tpope/vim-unimpaired')
@@ -40,11 +41,12 @@ call minpac#add('roxma/nvim-yarp')
 call minpac#add('roxma/vim-hug-neovim-rpc')
 call minpac#add('AndrewRadev/splitjoin.vim')
 call minpac#add('janko/vim-test')
+call minpac#add('autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh'})
 " call minpac#add('neoclide/coc.nvim')
 
 
 call minpac#add('junegunn/vim-easy-align')
-call minpac#add('ryanoasis/vim-devicons')
+" call minpac#add('ryanoasis/vim-devicons')
 
 " " language based
 call minpac#add('tpope/vim-rails')
@@ -56,6 +58,9 @@ call minpac#add('k-takata/minpac', {'type':'opt'})
 " call minpac#add('skalnik/vim-vroom')
 " call minpac#add('ElmCast/elm-vim')
 call minpac#add('pangloss/vim-javascript')
+call minpac#add('peitalin/vim-jsx-typescript')
+call minpac#add('leafgarland/typescript-vim')
+
 " call minpac#add('mxw/vim-jsx')
 call minpac#add('MaxMEllon/vim-jsx-pretty')
 " call minpac#add('sheerun/vim-polyglot')
@@ -65,12 +70,14 @@ call minpac#add('MaxMEllon/vim-jsx-pretty')
 command! PackUpdate call minpac#update()
 command! PackClean call minpac#clean()
 
+packadd! dracula
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                          settings                                            "
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-colorscheme gruvbox
-set background=dark
+syntax enable
+colorscheme dracula
 set hidden
 set cursorline
 set path+=**
@@ -79,12 +86,6 @@ set backupdir=~/.vim/backup//
 set directory=~/.vim/swap//
 set undodir=~/.vim/undo//
 
-
-" Switch syntax highlighting on, when the terminal has colors
-" Also switch on highlighting the last used search pattern.
-if (&t_Co > 2 || has("gui_running")) && !exists("syntax_on")
-  syntax on
-endif
 
 " Use Silver Searcher instead of grep
 set grepprg=ag
@@ -247,6 +248,8 @@ let $FZF_DEFAULT_COMMAND = 'ag -g ""'
 let g:ale_linters = { 'javascript': ['eslint'], 'ruby': ['rubocop'], 'typescript': ['eslint', 'tsserver'] }
 let g:ale_fixers = {}
 let g:ale_fixers['javascript'] = ['prettier']
+let g:ale_fixers['typescript'] = ['prettier']
+let g:ale_fixers['typescript.tsx'] = ['prettier']
 let g:ale_fixers['ruby'] = ['prettier']
 let g:ale_fix_on_save = 1
 let g:ale_history_log_output = 1
@@ -268,7 +271,7 @@ let g:ackprg = 'ag --vimgrep'
 
 " Lightline
 let g:lightline = {
-      \ 'colorscheme': 'gruvbox',
+      \ 'colorscheme': 'dracula',
       \ 'active': {
       \   'left': [['mode', 'paste'], ['readonly', 'filename', 'modified']],
       \   'right': [['filetype'], ['lineinfo'], ['percent'], ['readonly', 'linter_warnings', 'linter_errors', 'linter_ok']]
@@ -344,6 +347,23 @@ function! s:check_back_space() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
+
+" LanguageClient
+let g:LanguageClient_serverCommands = {
+       \ 'ruby': ['/Users/ericfirth/.rbenv/shims/solargraph', 'stdio'],
+       \ 'javascript': ['/usr/local/bin/typescript-language-server --stdio'],
+       \ 'javascript.jsx': ['/usr/local/bin/typescript-language-server --stdio'],
+       \ 'typescript': ['/usr/local/bin/typescript-language-server --stdio'],
+       \ 'typescript.tsx': ['/usr/local/bin/typescript-language-server --stdio'],
+       \}
+nnoremap <F5> :call LanguageClient_contextMenu()<CR>
+" Or map each action separately
+nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
+nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
+nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
+" let g:LanguageClient_settingsPath = '.config/languageclient.json'
+" nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
+
 
 " " Use <c-space> for trigger completion.
 " inoremap <silent><expr> <c-space> coc#refresh()

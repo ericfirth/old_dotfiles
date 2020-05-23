@@ -1,5 +1,6 @@
 export ZPLUG_HOME=/usr/local/opt/zplug
 source $ZPLUG_HOME/init.zsh
+export SHELL_SESSION_HISTORY=0
 
 zplug 'mafredri/zsh-async'
 zplug 'sindresorhus/pure'
