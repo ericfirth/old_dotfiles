@@ -1,4 +1,4 @@
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"toHaveBeenCalledWith"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                                                                              "
 "                    Eric Firth's VimRC                                        "
 "                                                                              "
@@ -13,16 +13,16 @@ call minpac#init()
 
 "colors
 call minpac#add('morhetz/gruvbox')
+call minpac#add('haishanh/night-owl.vim')
 call minpac#add('junegunn/goyo.vim')
 call minpac#add('junegunn/fzf.vim')
 call minpac#add('itchyny/lightline.vim')
-call minpac#add('ervandew/supertab')
 call minpac#add('airblade/vim-gitgutter')
 call minpac#add('christoomey/vim-sort-motion')
 call minpac#add('christoomey/vim-tmux-navigator')
 call minpac#add('chrisbra/csv.vim')
+
 call minpac#add('tpope/vim-surround')
-call minpac#add('tpope/vim-dispatch')
 call minpac#add('tpope/vim-unimpaired')
 call minpac#add('tpope/vim-repeat')
 call minpac#add('tpope/vim-fugitive')
@@ -32,52 +32,40 @@ call minpac#add('tpope/vim-abolish')
 call minpac#add('tpope/vim-endwise')
 call minpac#add('tpope/vim-speeddating')
 call minpac#add('tpope/vim-obsession')
-call minpac#add('dhruvasagar/vim-prosession')
+
 call minpac#add('gko/vim-coloresque')
 call minpac#add('SirVer/ultisnips')
 call minpac#add('w0rp/ale')
 call minpac#add('scrooloose/nerdtree')
-call minpac#add('roxma/nvim-yarp')
-call minpac#add('roxma/vim-hug-neovim-rpc')
-call minpac#add('AndrewRadev/splitjoin.vim')
 call minpac#add('janko/vim-test')
 call minpac#add('autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh'})
-" call minpac#add('neoclide/coc.nvim')
-
-
-call minpac#add('junegunn/vim-easy-align')
-" call minpac#add('ryanoasis/vim-devicons')
+call minpac#add('ryanoasis/vim-devicons')
+call minpac#add('ervandew/supertab')
+" call minpac#add('lifepillar/vim-mucomplete')
+call minpac#add('dhruvasagar/vim-prosession')
 
 " " language based
 call minpac#add('tpope/vim-rails')
 call minpac#add('aliou/sql-heredoc.vim')
-call minpac#add('skammer/vim-ruby-complexity', {'type':'opt'})
 call minpac#add('k-takata/minpac', {'type':'opt'})
-
-" RIP
-" call minpac#add('skalnik/vim-vroom')
-" call minpac#add('ElmCast/elm-vim')
 call minpac#add('pangloss/vim-javascript')
 call minpac#add('peitalin/vim-jsx-typescript')
 call minpac#add('leafgarland/typescript-vim')
-
-" call minpac#add('mxw/vim-jsx')
 call minpac#add('MaxMEllon/vim-jsx-pretty')
-" call minpac#add('sheerun/vim-polyglot')
-" call minpac#add('kien/ctrlp.vim')
+call minpac#add('jxnblk/vim-mdx-js')
 
 " minpac commands:
 command! PackUpdate call minpac#update()
 command! PackClean call minpac#clean()
 
-packadd! dracula
-
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                          settings                                            "
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+set termguicolors
 syntax enable
-colorscheme dracula
+colorscheme gruvbox
+
 set hidden
 set cursorline
 set path+=**
@@ -88,7 +76,7 @@ set undodir=~/.vim/undo//
 
 
 " Use Silver Searcher instead of grep
-set grepprg=ag
+set grepprg=rg
 " Make CtrlP use ag for listing the files. Way faster and no useless files.
 " let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
 " let g:ctrlp_use_caching = 0
@@ -116,6 +104,11 @@ augroup END
 
 set mouse=a
 
+nmap <Leader>b :Buffers<CR>
+nmap <Leader>r :Tags<CR>
+nmap <Leader>f :Files<CR>
+nmap <Leader>a :Ag
+
 " Softtabs, 2 spaces
 set tabstop=2
 set shiftwidth=2
@@ -123,23 +116,20 @@ set softtabstop=2
 set shiftround
 set expandtab
 
-augroup filetypedetect
-  au BufRead,BufNewFile *.jsx setfiletype javascript
-augroup END
-
 " Open new split panes to right and bottom, which feels more natural
 set splitbelow
 set splitright
 
 filetype indent on
 filetype on
-autocmd BufRead,BufNewFile *.json.jb set filetype=ruby
 
 let g:rubycomplexity_enable_at_startup = 0
 
 set noswapfile
 set undofile                        " Record undo history after leaving buffer
 set undodir=$HOME/.vim/undodir      " Store undofiles in $HOME/.vim/undodir
+
+highlight Comment cterm=italic
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                          mappings                                            "
@@ -163,30 +153,21 @@ nnoremap <C-h> <C-w>h
 nnoremap <C-l> <C-w>l
 nnoremap <leader>t :TestFile<CR>
 nnoremap <leader>T :TestNearest<CR>
+nnoremap <Leader>n :ThankYouNext<CR>
 
 
-" Start interactive EasyAlign in visual mode (e.g. vipga)
-xmap ga <Plug>(EasyAlign)
-
-" Start interactive EasyAlign for a motion/text object (e.g. gaip)
-nmap ga <Plug>(EasyAlign)
-
-nmap <leader>R :Dispatch chrome-cli reload<cr>
 map <leader>i mmgg=G`m
 nmap <leader>vr :tabedit ~/.vimrc<cr>
-nmap <leader>tm :tabedit ~/.tmux.conf<cr>
 nmap <leader>so :source $MYVIMRC<cr>
 nmap <leader>gs :Gstatus<cr>
 nmap <leader>s :w<cr>
 nmap <leader>S :w<cr>:Gwrite<cr>
-nmap <leader>gp ci(props<esc>oconst <esc>pA = props;<esc>
 nmap 0 ^
 nmap <cr> o<esc>k
 nmap j gj
 nmap k gk
 nmap <leader>nn :NERDTreeToggle<cr>
 nmap <leader>nf :NERDTreeFind<cr>
-" map <C-b> :CtrlPBuffer<cr>
 
 nnoremap <F1> :set hlsearch<cr>
 nnoremap <F2> :set nohlsearch<cr>
@@ -201,22 +182,19 @@ nnoremap <leader>Z zo
 
 nnoremap <leader>cc :set clipboard=unnamed<cr>
 nnoremap <leader>rx :call ShowComplexity()<cr>
-nnoremap <leader>rc :Dispatch rails console<cr>
 
-nnoremap <leader>1b :! jscodeshift -t ~/code/react-codemod/transforms/manual-bind-to-arrow.js %<cr>
-nnoremap <leader>1p :! jscodeshift -t ~/code/react-codemod/transforms/pure-component.js % --useArrows=true --destructuring=true<cr>
-
-nnoremap <leader>jt :! jsctags -o frontend<cr>
 
 nnoremap Q @@
 
-nmap <Leader>b :Buffers<CR>
-nmap <Leader>r :Tags<CR>
-nmap <Leader>f :Files<CR>
-nmap <Leader>a :Ag
+" nmap <Leader>b :Buffers<CR>
+" nmap <Leader>r :Tags<CR>
+" nmap <Leader>f :Files<CR>
 
 nmap <Leader>ak <Plug>(ale_previous_wrap)
 nmap <Leader>aj <Plug>(ale_next_wrap)
+nmap <Leader>ah :ALEHover<CR>
+nmap <Leader>ar :ALEFindReferences<CR>
+nmap <Leader>ag :ALEGoToDefinition<CR>
 
 " bind K to grep word under cursor
 nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
@@ -224,11 +202,11 @@ nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                    commands!!!                                               "
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let @z='gg/PropTypea, Componentjj0/funciwclassf(di(oconst p = this.props;k-jf(c$ extends Component {orender() {/}n/Componentnf{%%kjj%o} i'
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                    Plugin Settings!!!                                        "
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 let g:UltiSnipsSnippetsDir='~/.vim/UltiSnips'
 let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<tab>"
@@ -236,6 +214,12 @@ let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 let g:UltiSnipsEditSplit="vertical"
 
 let test#strategy = "vimterminal"
+if has('nvim')
+  let test#strategy = "neovim"
+  let g:test#preserve_screen = 1
+  tmap <C-o> <C-\><C-n>
+endif
+
 let test#javascript#runner = 'jest'
 let test#javascript#jest#executable = 'yarn test'
 
@@ -245,11 +229,13 @@ set rtp+=/home/linuxbrew/.linuxbrew/bin/fzf
 set rtp+=~/.fzf
 let $FZF_DEFAULT_COMMAND = 'ag -g ""'
 
+let g:ale_completion_tsserver_autoimport = 1
 let g:ale_linters = { 'javascript': ['eslint'], 'ruby': ['rubocop'], 'typescript': ['eslint', 'tsserver'] }
 let g:ale_fixers = {}
 let g:ale_fixers['javascript'] = ['prettier']
 let g:ale_fixers['typescript'] = ['prettier']
 let g:ale_fixers['typescript.tsx'] = ['prettier']
+let g:ale_fixers['typescriptreact'] = ['prettier']
 let g:ale_fixers['ruby'] = ['prettier']
 let g:ale_fix_on_save = 1
 let g:ale_history_log_output = 1
@@ -271,7 +257,7 @@ let g:ackprg = 'ag --vimgrep'
 
 " Lightline
 let g:lightline = {
-      \ 'colorscheme': 'dracula',
+      \ 'colorscheme': 'nightowl',
       \ 'active': {
       \   'left': [['mode', 'paste'], ['readonly', 'filename', 'modified']],
       \   'right': [['filetype'], ['lineinfo'], ['percent'], ['readonly', 'linter_warnings', 'linter_errors', 'linter_ok']]
@@ -330,7 +316,6 @@ function! s:MaybeUpdateLightline()
 endfunction
 
 let g:ale_history_log_output = 1
-
 let g:prosession_per_branch = 1
 
 
@@ -349,68 +334,38 @@ function! s:check_back_space() abort
 endfunction
 
 " LanguageClient
+
+let g:LanguageClient_autoStart = 1
 let g:LanguageClient_serverCommands = {
-       \ 'ruby': ['/Users/ericfirth/.rbenv/shims/solargraph', 'stdio'],
-       \ 'javascript': ['/usr/local/bin/typescript-language-server --stdio'],
-       \ 'javascript.jsx': ['/usr/local/bin/typescript-language-server --stdio'],
-       \ 'typescript': ['/usr/local/bin/typescript-language-server --stdio'],
-       \ 'typescript.tsx': ['/usr/local/bin/typescript-language-server --stdio'],
-       \}
-nnoremap <F5> :call LanguageClient_contextMenu()<CR>
-" Or map each action separately
-nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
+    \ 'javascript': ['javascript-typescript-stdio'],
+    \ 'typescript': ['typescript-language-server', '--stdio'],
+    \ 'typescriptreact': ['typescript-language-server', '--stdio'],
+    \ 'typescript.tsx': ['typescript-language-server', '--stdio'],
+    \ }
+
+nnoremap <leader>le :call LanguageClient#explainErrorAtPoint()<CR>
+nnoremap <leader>lgd :call LanguageClient#textDocument_definition()<CR>
+nnoremap <leader>lgi :call LanguageClient#textDocument_implementation()<CR>
+nnoremap <leader>lgr :call LanguageClient#textDocument_references()<CR>
+nnoremap <leader>lgt :call LanguageClient#textDocument_typeDefinition()<CR>
+nnoremap <leader>lr :call LanguageClient#textDocument_rename()<CR>
+nnoremap <leader>lt :call LanguageClient#textDocument_hover()<CR>
+
+augroup filetype_ts
+  autocmd!
+  autocmd BufReadPost *.ts setlocal filetype=typescript
+  autocmd BufNewFile,BufRead *.tsx,*.jsx set filetype=typescript.tsx syntax=typescript
+augroup END
+
 nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
-nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
-" let g:LanguageClient_settingsPath = '.config/languageclient.json'
-" nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
 
+function! s:ThankYouNext() abort
+  update
+  argdelete %
+  bdelete
+  if !empty(argv())
+    argument
+  endif
+endfunction
 
-" " Use <c-space> for trigger completion.
-" inoremap <silent><expr> <c-space> coc#refresh()
-
-" " Use `[c` and `]c` for navigate diagnostics
-" nmap <silent> [c <Plug>(coc-diagnostic-prev)
-" nmap <silent> ]c <Plug>(coc-diagnostic-next)
-
-" " Remap keys for gotos
-" nmap <silent> gd <Plug>(coc-definition)
-" nmap <silent> gy <Plug>(coc-type-definition)
-" nmap <silent> gi <Plug>(coc-implementation)
-" nmap <silent> gr <Plug>(coc-references)
-
-" " Use K for show documentation in preview window
-" nnoremap <silent> K :call <SID>show_documentation()<CR>
-
-" function! s:show_documentation()
-"   if &filetype == 'vim'
-"     execute 'h '.expand('<cword>')
-"   else
-"     call CocAction('doHover')
-"   endif
-" endfunction
-
-" " Highlight symbol under cursor on CursorHold
-" autocmd CursorHold * silent call CocActionAsync('highlight')
-
-" " Remap for rename current word
-" nmap <leader>rn <Plug>(coc-rename)
-
-" " Remap for format selected region
-" vmap <leader>F  <Plug>(coc-format-selected)
-" nmap <leader>F  <Plug>(coc-format-selected)
-
-" " Or use formatexpr for range format
-" set formatexpr=CocAction('formatSelected')
-
-" " Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
-" vmap <leader>a  <Plug>(coc-codeaction-selected)
-" nmap <leader>a  <Plug>(coc-codeaction-selected)
-
-" " Remap for do codeAction of current line
-" nmap <leader>ac  <Plug>(coc-codeaction)
-
-" " Use `:Format` for format current buffer
-" command! -nargs=0 Format :call CocAction('format')
-
-" " Use `:Fold` for fold current buffer
-" command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+command! ThankYouNext call <sid>ThankYouNext()
